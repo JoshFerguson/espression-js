@@ -1,7 +1,17 @@
+const NativeExpressions = {
+    Date: (date) => {
+        return new Date(date||null)
+    }
+}
+
 const ExpressionRegex = /(<%([^%]|"")*%>)/g;
 
 const globals = (props) => {
     this.globalProps = props;
+    return this.default;
+}
+
+const config = () => {
     return this.default;
 }
 
@@ -30,10 +40,13 @@ const parseExpression = (inst) => {
     const args = expression.match(/\(([^)]+)\)/);
     const opts = expression.split('|');
     const tail = expression.split(').');
+    const prop = tail.length > 1 ? tail[1].split('|')[0] : '';
+    const propIsFunc = prop[prop.length - 1] === ')';
     return {
         name: name.replace('=', ''),
         args: args ? string_int(args[0].replace(/[{()}]/g, '').replace(/ /g, '').split(',')) : [],
-        prop: tail.length > 1 ? tail[1].split('|')[0] : [],
+        prop: propIsFunc ? prop.substring(0, prop.length-2) : prop,
+        propIsFunc: propIsFunc,
         options: opts.length > 1 ? opts[1].split(' ') : [],
         expression: inst,
         print: (name[0] === '=')
@@ -50,7 +63,23 @@ const parse = (textString, preventProgression) => {
         return preventProgression ? expression : parseExpression(expression);
     });
     result.textString = textString;
+    console.log(result)
     return result;
+}
+
+const fetchData = (expression) => {
+    if( NativeExpressions[expression.name] ){
+        const result = NativeExpressions[expression.name]();
+        if(expression.prop){
+            if(expression.propIsFunc){
+                console.log(expression.prop)
+                return result[expression.prop]();
+            }
+            return result[expression.prop];
+        }
+        return result;
+    }
+    return expression.name;
 }
 
 const render = (expressions, printOnly) => {
@@ -61,12 +90,13 @@ const render = (expressions, printOnly) => {
             return true;
         }
     })
-    .map(expression => expressions.textString = expressions.textString.replace(expression.expression, expression.name));
+    .map(expression => expressions.textString = expressions.textString.replace(expression.expression, fetchData(expression)));
     return expressions.textString;
 }
 
 const ExpressionJs = {
     globals,
+    config,
 
     parse,
     parseExpression,
