@@ -12,5 +12,4 @@ const results = ExpressionJs.render(expressions, true);
 
 console.log(results);
 
-
 // '<%Date()%>'

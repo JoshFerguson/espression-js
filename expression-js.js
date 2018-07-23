@@ -40,15 +40,18 @@ const parseExpression = (inst) => {
     }
 }
 
+const parseNested = (textString) => {
+    return textString;
+}
+
 const parse = (textString, preventProgression) => {
-    const matches = textString.match(ExpressionRegex);
+    const matches = parseNested(textString).match(ExpressionRegex);
     const result = !matches ? [] : matches.map((expression, index) => {
         return preventProgression ? expression : parseExpression(expression);
     });
     result.textString = textString;
     return result;
 }
-
 
 const render = (expressions, printOnly) => {
     let expArray = expressions;
@@ -73,4 +76,3 @@ const ExpressionJs = {
 
 exports.ExpressionJs = ExpressionJs;
 exports.default = ExpressionJs;
-
