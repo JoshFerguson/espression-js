@@ -1,5 +1,10 @@
 const ExpressionRegex = /(<%([^%]|"")*%>)/g;
 
+const globals = (props) => {
+    this.globalProps = props;
+    return this.default;
+}
+
 const use_global = (input) => {
     const global = input.replace('@', '');
     if(this.globalProps){
@@ -44,25 +49,17 @@ const parse = (textString, preventProgression) => {
     return result;
 }
 
-const printable = (expressions) => {
-    expressions.map(expression => {
-        if(expression.print){
-            expressions.textString = expressions.textString.replace(expression.expression, expression.name)
-        }
-    });
-    return expressions.textString;
-}
 
-const render = (expressions) => {
-    expressions.map(expression => {
+const render = (expressions, printOnly) => {
+    let expArray = expressions;
+    if(printOnly){
+        expArray = expressions.filter(expression => expression.print === true);
+        expArray.textString = expressions.textString;
+    }
+    expArray.map(expression => {
         return expressions.textString = expressions.textString.replace(expression.expression, expression.name);
     });
     return expressions.textString;
-}
-
-const globals = (props) => {
-    this.globalProps = props;
-    return this.default;
 }
 
 const ExpressionJs = {
@@ -71,7 +68,6 @@ const ExpressionJs = {
     parse,
     parseExpression,
 
-    printable,
     render
 }
 

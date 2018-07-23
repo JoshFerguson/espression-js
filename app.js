@@ -8,10 +8,9 @@ const text = 'Hello my name is <%=Person(1).name%>, and I am from <%Person(@user
 
 const expressions = ExpressionJs.parse(text);
 
-const results = ExpressionJs.printable(expressions);
-//const results = ExpressionJs.render(expressions);
+const results = ExpressionJs.render(expressions, true);
 
 console.log(results);
 
 
-// '<%Date(<%DaysFromNow(2)%>)%>'
+// '<%Date()%>'
