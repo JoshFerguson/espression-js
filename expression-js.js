@@ -54,14 +54,14 @@ const parse = (textString, preventProgression) => {
 }
 
 const render = (expressions, printOnly) => {
-    let expArray = expressions;
-    if(printOnly){
-        expArray = expressions.filter(expression => expression.print === true);
-        expArray.textString = expressions.textString;
-    }
-    expArray.map(expression => {
-        return expressions.textString = expressions.textString.replace(expression.expression, expression.name);
-    });
+    expressions.filter(expression => {
+        if(printOnly){
+            return expression.print === true;
+        }else{
+            return true;
+        }
+    })
+    .map(expression => expressions.textString = expressions.textString.replace(expression.expression, expression.name));
     return expressions.textString;
 }
 

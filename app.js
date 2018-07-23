@@ -8,7 +8,7 @@ const text = 'Hello my name is <%=Person(1).name%>, and I am from <%Person(@user
 
 const expressions = ExpressionJs.parse(text);
 
-const results = ExpressionJs.render(expressions, true);
+const results = ExpressionJs.render(expressions);
 
 console.log(results);
 
